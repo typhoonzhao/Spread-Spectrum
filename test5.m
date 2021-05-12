@@ -1,0 +1,33 @@
+seq1 = mSeq(6,147);
+r=6; 
+N=63;
+q=2^(r/2)+1;  
+for n = 1:2^(r/2)-1
+    idx = mod(q*(n-1),N);
+    seq2(n) = seq1(idx+1);
+end
+seq2 = repmat(seq2,[1,2^(r/2)+1]);
+seq3 = mSeq(6,103); 
+pA = [0,5];
+pB = [5,4];
+seq2_t = circshift(seq2,pA(1));
+KseqA = mod(seq1 + seq2_t(1:N) + circshift(seq3,pA(2)),2);
+wgt = sum(KseqA);
+seq2_t = circshift(seq2,pB(1));
+KseqB = mod(seq1 + seq2_t(1:N) + circshift(seq3,pB(2)),2);
+wgt = sum(KseqB);
+Ra = ycorr(KseqA,KseqA,63);
+Rb = ycorr(KseqB,KseqB,63);
+Rab = ycorr(KseqA,KseqB,63);
+N=63;
+t=1-N:1:N-1;
+figure(8);
+subplot(311);
+plot(t,Ra/N,'linewidth',1); 
+title('Kasami大集序列1自相关函数');
+subplot(312);
+plot(t,Rb/N,'linewidth',1);
+title('Kasami大集序列2自相关函数');
+subplot(313);
+plot(t,Rab,'linewidth',1); 
+title('Kasami大集序列1和2的互相关函数');
